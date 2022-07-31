@@ -21,7 +21,6 @@ services.AddDbContext<ApplicationDbContext>(options =>
 
 });
 
-
 /// gestão das classes e das interfaces de forma isolada
 /// management of the classes and the interfaces in isolation
 /// e.g: services.AddScoped<IFoo, Foo>();
