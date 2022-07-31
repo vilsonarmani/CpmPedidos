@@ -18,5 +18,9 @@ public class EnderecoMap : BaseDomainMap<Endereco>
         builder.Property(x => x.Numero).HasColumnName("numero").HasMaxLength(10);
         builder.Property(x => x.Complemento).HasColumnName("complemento").HasMaxLength(50);
         builder.Property(x => x.Cep).HasColumnName("cep").HasMaxLength(8).IsRequired();
+
+        // 1:1
+        builder.HasOne(x => x.Cliente).WithOne(x => x.Endereco).HasForeignKey<Cliente>(x => x.IdEndereco);
+
     }
 }

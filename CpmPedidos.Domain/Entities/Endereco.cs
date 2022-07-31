@@ -12,5 +12,7 @@ public class Endereco: BaseDomain
     public int IdCidade { get; set; } //specify the foreign Key
     public virtual Cidade Cidade { get; set; } ///virtual to do the lazyLoad
 
+    public virtual Cliente Cliente { get; set; }
+
 
 }
