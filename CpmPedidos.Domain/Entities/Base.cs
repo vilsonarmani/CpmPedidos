@@ -2,7 +2,7 @@
 
 public class Endereco: BaseDomain
 {
-    public TipoEnum Tipo { get; set; }
+    public TipoEnderecoEnum Tipo { get; set; }
     public string Logradouro { get; set; }
     public string Bairro { get; set; }
     public string Numero { get; set; }
