@@ -19,5 +19,22 @@ public class ComboMap : BaseDomainMap<Combo>
         //1:N
         builder.Property(x => x.IdImagem).HasColumnName("id_imagem").IsRequired();
         builder.HasOne(x => x.Imagem).WithMany().HasForeignKey(x => x.IdImagem);
+
+        builder
+            .HasMany(x => x.Produtos)
+            .WithMany(x => x.Combos)
+            .UsingEntity<ProdutoCombo>( //keys and table contents
+                x => x.HasOne(produtoCombo => produtoCombo.Produto).WithMany().HasForeignKey(produtoCombo => produtoCombo.IdProduto), 
+                x => x.HasOne(produtoCombo => produtoCombo.Combo).WithMany().HasForeignKey(produtoCombo => produtoCombo.IdCombo),
+                x => //table definition
+                {
+                    x.ToTable("tb_produto_combo");
+
+                    x.HasKey(produtoCombo => new { produtoCombo.IdProduto, produtoCombo.IdCombo }); // creating a composite key
+
+                    x.Property(produtoCombo => produtoCombo.IdProduto).HasColumnName("id_produto").IsRequired();
+                    x.Property(x => x.IdCombo).HasColumnName("id_combo").IsRequired();
+                }
+            );
     }
 }
