@@ -14,7 +14,7 @@ services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(
         /// use this connectionstring
-        builder.Configuration.GetConnectionString("DefaultConnection"),
+        builder.Configuration.GetConnectionString("AppContext"),
         /// todas as configurações de banco de dados está no assembly que o meu contexto está
         /// all the database settings are in the assembly that my context is
         assembly => assembly.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
