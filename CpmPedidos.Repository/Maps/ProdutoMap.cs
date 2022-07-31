@@ -18,7 +18,9 @@ public class ProdutoMap : BaseDomainMap<Produto>
 
         builder.Property(x => x.Ativo).HasColumnName("ativo").IsRequired();
 
-
+        //1:N
+        builder.Property(x => x.IdCategoria).HasColumnName("id_categoria").IsRequired();
+        builder.HasOne(x => x.Categoria).WithMany(x => x.Produtos).HasForeignKey(x => x.IdCategoria);
 
     }
 }

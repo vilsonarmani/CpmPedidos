@@ -13,7 +13,9 @@ public class ProdutoPedidoMap : BaseDomainMap<ProdutoPedido>
         base.Configure(builder);
 
         builder.Property(x => x.Quantidade).HasColumnName("quantidade").HasPrecision(2).IsRequired();
-        builder.Property(x => x.Preco).HasColumnName("preco").HasPrecision(17, 2).IsRequired();        
+        builder.Property(x => x.Preco).HasColumnName("preco").HasPrecision(17, 2).IsRequired();
+
+        
 
     }
 }
