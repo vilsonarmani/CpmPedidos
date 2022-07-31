@@ -18,5 +18,9 @@ public class BaseDomainMap<TDomain> : IEntityTypeConfiguration<TDomain> where TD
         if (!string.IsNullOrEmpty(_tablename)){
             builder.ToTable(_tablename);
         }
+        builder.HasKey(k => k.Id);
+        builder.Property(p => p.Id).HasColumnName("Id").ValueGeneratedOnAdd(); //defines the auto generated value
+
+        builder.Property(p => p.CriadoEm).HasColumnName("criado_em").IsRequired();
     }
 }
