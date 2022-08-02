@@ -22,5 +22,23 @@ public class ProdutoMap : BaseDomainMap<Produto>
         builder.Property(x => x.IdCategoria).HasColumnName("id_categoria").IsRequired();
         builder.HasOne(x => x.Categoria).WithMany(x => x.Produtos).HasForeignKey(x => x.IdCategoria);
 
+        //N:N
+        builder
+            .HasMany(x => x.Imagens)
+            .WithMany(x => x.Produtos)
+            .UsingEntity<ImagemProduto>( //keys and table contents                
+                x => x.HasOne(produtoCombo => produtoCombo.Imagem).WithMany().HasForeignKey(produtoCombo => produtoCombo.IdImagem),
+                x => x.HasOne(produtoCombo => produtoCombo.Produto).WithMany().HasForeignKey(produtoCombo => produtoCombo.IdProduto),
+                x => //table definition
+                {
+                    x.ToTable("tb_imagem_produto");
+
+                    x.HasKey(imagemProduto => new { imagemProduto.IdImagem, imagemProduto.IdProduto}); // creating a composite key
+
+                    x.Property(imagemProduto => imagemProduto.IdImagem).HasColumnName("id_imagem").IsRequired();
+                    x.Property(imagemProduto => imagemProduto.IdProduto).HasColumnName("id_produto").IsRequired();                    
+                }
+            );
+
     }
 }

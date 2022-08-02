@@ -20,4 +20,10 @@
     <ProjectReference Include="..\CpmPedidos.Repository\CpmPedidos.Repository.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Update="appsettings.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
 </Project>
