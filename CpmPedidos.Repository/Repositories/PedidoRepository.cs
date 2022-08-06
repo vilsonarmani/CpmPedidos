@@ -22,13 +22,20 @@ public class PedidoRepository : BaseRepository, IPedidoRepository
 
     }
 
-    public dynamic PedidosClientes()
+    public dynamic PedidosClientes(DateTime dateStart, DateTime dateEnd)
     {
         DateTime today = DateTime.Today;
 
         DateTime inicioMes = new DateTime(today.Year, today.Month, 1);
         DateTime finalMes = new DateTime(today.Year, today.Month, DateTime.DaysInMonth(today.Year, today.Month));
 
+        if ((DateUtils.DataPura(dateStart) && DateUtils.DataPura(dateEnd)) &&
+            (dateEnd > dateStart))
+        {
+            inicioMes = dateStart;
+            finalMes = dateEnd;
+        }
+        
 
         return _context.Pedidos
             .Where(p => p.CriadoEm.Date >= inicioMes && p.CriadoEm.Date <= finalMes)

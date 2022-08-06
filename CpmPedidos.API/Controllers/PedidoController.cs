@@ -26,11 +26,14 @@ public class PedidoController : AppBaseController
             .TicketMaximo();
     }
 
-    [HttpGet]
-    [Route("por-cliente")]
-    public dynamic PedidosClientes()
+    [HttpGet, Route("por-cliente", Name = "PedidosClientes")]
+    /// URI E.g: (manual tests)
+    /// Pedido/por-cliente?dateStart=2021-01-01T00:00:00&dateEnd=2022-08-06T23:59:59
+    /// Pedido/por-cliente?dateStart=2022-08-06T23:59:59&dateEnd=2021-01-01T00:00:00
+    /// Pedido/por-cliente
+    public dynamic PedidosClientes([FromQuery]DateTime dateStart, DateTime dateEnd)
     {
-        return getRepository().PedidosClientes();
+        return getRepository().PedidosClientes(dateStart, dateEnd);
     }
 
 
