@@ -11,24 +11,52 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
 
     public ProdutoRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _context = dbContext;        
+        _context = dbContext;
     }
 
-    public List<Produto> Get()
+    public dynamic Get()
     {
         return _context.Produtos
-            .Include(x => x.Categoria)
-            .Where(x => x.Ativo)
+            .Include(p => p.Categoria)
+            .Where(p => p.Ativo)
+            .Select(p => new
+            {
+                p.Nome,
+                p.Preco,
+                Categoria = p.Categoria.Nome,
+                Imagens = p.Imagens.Select(i => new
+                {
+                    i.Id,
+                    i.Nome,
+                    i.NomeArquivo,
+                    i.Principal
+                })
+
+            })
             .OrderBy(x => x.Nome)
-            .ToList();        
+            .ToList();
     }
     public dynamic Search(string text, int pagina)
     {
-        var produtos =  _context.Produtos
-            .Include(x => x.Categoria)
-            .Where(x => x.Ativo && (x.Nome.ToUpper().Contains(text.ToUpper()) || x.Descricao.ToUpper().Contains(text.ToUpper())))
+        var produtos = _context.Produtos
+            .Include(p => p.Categoria)
+            .Where(p => p.Ativo && (p.Nome.ToUpper().Contains(text.ToUpper()) || p.Descricao.ToUpper().Contains(text.ToUpper())))
             .Skip(TamanhoPagina * (pagina - 1))
             .Take(TamanhoPagina)
+            .Select(p => new
+            {
+                p.Nome,
+                p.Preco,
+                Categoria = p.Categoria.Nome,
+                Imagens = p.Imagens.Select(i => new
+                {
+                    i.Id,
+                    i.Nome,
+                    i.NomeArquivo,
+                    i.Principal
+                })
+
+            })
             .OrderBy(x => x.Nome)
             .ToList();
 
@@ -43,16 +71,54 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
             PageCount = 1;
         }
 
-        return new { produtos, PageCount};
+        return new { produtos, PageCount };
     }
-    
-    public Produto Detail(int id)
+
+    public dynamic Detail(int id)
     {
         return _context.Produtos
-            .Include(x => x.Imagens)
-            .Include(x => x.Categoria)
-            .Where(x => x.Ativo && x.Id == id)
-            .OrderBy(x => x.Nome)
+            .Include(p => p.Imagens)
+            .Include(p => p.Categoria)
+            .Where(p => p.Ativo && p.Id == id)
+            .Select(p => new
+            {
+                p.Id,
+                p.Nome,
+                p.Codigo,
+                p.Descricao,
+                p.Preco,
+                Categoria = new
+                {
+                    p.Categoria.Id,
+                    p.Categoria.Nome
+                },
+                Imagens = p.Imagens.Select(i => new
+                {
+                    i.Id,
+                    i.Nome,
+                    i.NomeArquivo,
+                    i.Principal
+                })
+            })
+            .OrderBy(p => p.Nome)
+            .FirstOrDefault()!;
+    }
+
+    public dynamic Imagens(int id)
+    {
+        return _context.Produtos
+            .Include(p => p.Imagens)
+            .Where(p => p.Ativo && p.Id == id)
+            .SelectMany(p => p.Imagens, (produto, imagem) => new
+            {
+                IdProduto = produto.Id,
+                imagem.Id,
+                imagem.Nome,
+                imagem.NomeArquivo,
+                imagem.Principal
+            })
+
+            .OrderBy(p => p.Nome)
             .FirstOrDefault()!;
     }
 

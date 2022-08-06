@@ -17,7 +17,7 @@ public class ProdutoController : AppBaseController
     }
 
     [HttpGet]
-    public IEnumerable<Produto> Get()
+    public dynamic Get()
     {
         ///get the service provider instance
         var rep = getProdutoRepository();
@@ -34,12 +34,28 @@ public class ProdutoController : AppBaseController
 
     [HttpGet]
     [Route("{id}")]
-    public Produto Detail(int? id)
+    public dynamic Detail(int? id)
     {
         if ((id ?? 0) > 0)
         {
             return getProdutoRepository()
                 .Detail(id!.Value);
+        }
+        else
+        {
+            return null!;
+        }
+
+    }
+    
+    [HttpGet]
+    [Route("{id}/imagens")]
+    public dynamic Imagens(int? id)
+    {
+        if ((id ?? 0) > 0)
+        {
+            return getProdutoRepository()
+                .Imagens(id!.Value);
         }
         else
         {
