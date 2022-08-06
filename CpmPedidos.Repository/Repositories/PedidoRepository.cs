@@ -9,9 +9,9 @@ namespace CpmPedidos.Repository;
 
 public class PedidoRepository : BaseRepository, IPedidoRepository
 {
-   
 
-    public PedidoRepository(ApplicationDbContext dbContext) : base(dbContext) {}
+
+    public PedidoRepository(ApplicationDbContext dbContext) : base(dbContext) { }
 
     public decimal TicketMaximo()
     {
@@ -32,13 +32,14 @@ public class PedidoRepository : BaseRepository, IPedidoRepository
 
         return _context.Pedidos
             .Where(p => p.CriadoEm.Date >= inicioMes && p.CriadoEm.Date <= finalMes)
-            .GroupBy(pedido => new { pedido.IdCliente, pedido.Cliente.Nome })
-            .Select(x => new
-            {
-                Cliente = x.Key.Nome,
-                Pedidos = x.Count(),
-                Total = x.Sum(p => p.ValorTotal)
-            })
+            .GroupBy(
+                pedido => new { pedido.IdCliente, pedido.Cliente.Nome },
+                (chave, pedidos) => new
+                {
+                    Cliente = chave.Nome,
+                    Pedidos = pedidos.Count(),
+                    Total = pedidos.Sum(pedido => pedido.ValorTotal)
+                })
             .ToList();
     }
 }
