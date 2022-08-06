@@ -8,9 +8,10 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
 {
     private readonly ApplicationDbContext _context;
 
+
     public ProdutoRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
-        _context = dbContext;
+        _context = dbContext;        
     }
 
     public List<Produto> Get()
@@ -21,16 +22,28 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
             .OrderBy(x => x.Nome)
             .ToList();        
     }
-    public List<Produto> Search(string text, int pagina)
+    public dynamic Search(string text, int pagina)
     {
-        return _context.Produtos
+        var produtos =  _context.Produtos
             .Include(x => x.Categoria)
             .Where(x => x.Ativo && (x.Nome.ToUpper().Contains(text.ToUpper()) || x.Descricao.ToUpper().Contains(text.ToUpper())))
             .Skip(TamanhoPagina * (pagina - 1))
             .Take(TamanhoPagina)
             .OrderBy(x => x.Nome)
-            .ToList()
-            ;
+            .ToList();
+
+        var ProductsCount = _context.Produtos
+            .Where(x => x.Ativo && (x.Nome.ToUpper().Contains(text.ToUpper()) || x.Descricao.ToUpper().Contains(text.ToUpper())))
+            .Count();
+
+        var PageCount = (ProductsCount / TamanhoPagina);
+
+        if (PageCount < 1)
+        {
+            PageCount = 1;
+        }
+
+        return new { produtos, PageCount};
     }
     
     public Produto Detail(int id)

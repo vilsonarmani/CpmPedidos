@@ -26,7 +26,7 @@ public class ProdutoController : AppBaseController
 
     [HttpGet]
     [Route("search/{text}/{pagina?}")]
-    public IEnumerable<Produto> GetSearch(string text, int pagina = 1)
+    public dynamic GetSearch(string text, int pagina = 1)
     {      
         return getProdutoRepository()
             .Search(text, pagina);
