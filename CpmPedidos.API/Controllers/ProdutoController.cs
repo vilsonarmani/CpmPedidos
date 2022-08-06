@@ -25,11 +25,11 @@ public class ProdutoController : AppBaseController
     }
 
     [HttpGet]
-    [Route("search/{text}")]
-    public IEnumerable<Produto> GetSearch(string text)
+    [Route("search/{text}/{pagina?}")]
+    public IEnumerable<Produto> GetSearch(string text, int pagina = 1)
     {      
         return getProdutoRepository()
-            .Search(text);
+            .Search(text, pagina);
     }
 
     [HttpGet]
