@@ -1,7 +1,6 @@
-﻿
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
-namespace CpmPedidos.API.Controllers.Base;
+namespace CpmPedidos.API.Controllers;
 
 public class AppBaseController : Controller
 {

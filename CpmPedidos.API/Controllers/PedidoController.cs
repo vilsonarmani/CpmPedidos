@@ -1,5 +1,4 @@
-﻿using CpmPedidos.API.Controllers.Base;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 
 namespace CpmPedidos.API.Controllers;
 

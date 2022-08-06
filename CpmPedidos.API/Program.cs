@@ -1,6 +1,7 @@
 using CpmPedidos.API;
 using Microsoft.EntityFrameworkCore;
 using CpmPedidos.Repository;
+using System.Text.Json.Serialization;
 //using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,6 +21,9 @@ services.AddDbContext<ApplicationDbContext>(options =>
         assembly => assembly.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName));
 
 });
+
+services.AddControllers()
+.AddJsonOptions(options => { options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles; });
 
 /// gestão das classes e das interfaces de forma isolada
 /// management of the classes and the interfaces in isolation
