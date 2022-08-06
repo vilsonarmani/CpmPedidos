@@ -26,5 +26,12 @@ public class PedidoController : AppBaseController
             .TicketMaximo();
     }
 
+    [HttpGet]
+    [Route("por-cliente")]
+    public dynamic PedidosClientes()
+    {
+        return getRepository().PedidosClientes();
+    }
+
 
 }
