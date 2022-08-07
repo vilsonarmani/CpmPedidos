@@ -5,14 +5,8 @@ namespace CpmPedidos.API.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class PedidoController : AppBaseController
-{
-    
+{    
     public PedidoController(IServiceProvider serviceProvider) : base(serviceProvider){}
-
-    private IPedidoRepository getRepository()
-    {
-        return (IPedidoRepository)_serviceProvider.GetService(typeof(IPedidoRepository))!;
-    }
 
     /// <summary>
     /// Return the today maximum Ticket
@@ -22,8 +16,7 @@ public class PedidoController : AppBaseController
     [Route("ticket-maximo")]
     public decimal TicketMaximo()
     {
-        return getRepository()
-            .TicketMaximo();
+        return GetService<IPedidoRepository>().TicketMaximo();
     }
 
     [HttpGet, Route("por-cliente", Name = "PedidosClientes")]
@@ -33,8 +26,6 @@ public class PedidoController : AppBaseController
     /// Pedido/por-cliente
     public dynamic PedidosClientes([FromQuery]DateTime dateStart, DateTime dateEnd)
     {
-        return getRepository().PedidosClientes(dateStart, dateEnd);
+        return GetService<IPedidoRepository>().PedidosClientes(dateStart, dateEnd);
     }
-
-
 }

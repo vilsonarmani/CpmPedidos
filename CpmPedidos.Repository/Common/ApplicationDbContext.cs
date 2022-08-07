@@ -20,6 +20,9 @@ public class ApplicationDbContext : DbContext
 
     protected ApplicationDbContext()
     {
+        /// when set AutoDetectChangesEnabled to false the EF does not change the state of the dataset. We have to do this manually.
+        /// This causes an increase in performance and implies the need to use the "Update" method because the DbContext does not detect the state change.
+        /// see CidadeRepository on "Alterar" Method
         ChangeTracker.AutoDetectChangesEnabled = false;
     }
 
