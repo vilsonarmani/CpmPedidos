@@ -55,26 +55,22 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
             /// Log e Flunt (TODO: Add Packages and use {Technical Debt})
         }
 
-        return -1;
-
+        return -1; /// TODO: Set Constant {Technical Debt}
         
-        /// TODO: Set Constant {Technical Debt}
-
-
     }
 
     public int Alterar(CidadeDTO model)
     {
         if(model.Id >= 0)
-            return -1;
+            return -1;/// TODO: Set Constant {Technical Debt}
 
         var entity = _context.Cidades.Find(model.Id);
 
         if (entity == null)
-            return -1;
+            return -1;/// TODO: Set Constant {Technical Debt}
 
         if (_context.Cidades.Any(x => x.Ativo && x.Nome.ToUpper() == model.Nome.ToUpper() && x.Id !=  model.Id ) )
-            return -1;
+            return -1;/// TODO: Set Constant {Technical Debt}
 
         entity.Nome = model.Nome;
         entity.Uf = model.Uf;
