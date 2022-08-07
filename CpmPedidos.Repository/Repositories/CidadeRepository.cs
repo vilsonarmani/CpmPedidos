@@ -29,7 +29,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
     {
         if (model.Id > 0)
             return 0;
-        
+
         if (_context.Cidades.Any(x => x.Ativo && x.Nome.ToUpper() == model.Nome.ToUpper()))
             return 0;
 
@@ -38,7 +38,6 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
             Nome = model.Nome,
             Uf = model.Uf,
             Ativo = model.Ativo
-
         };
 
         try
@@ -56,12 +55,12 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
         }
 
         return -1; /// TODO: Set Constant {Technical Debt}
-        
+
     }
 
     public int Alterar(CidadeDTO model)
     {
-        if(model.Id >= 0)
+        if (model.Id >= 0)
             return -1;/// TODO: Set Constant {Technical Debt}
 
         var entity = _context.Cidades.Find(model.Id);
@@ -69,7 +68,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
         if (entity == null)
             return -1;/// TODO: Set Constant {Technical Debt}
 
-        if (_context.Cidades.Any(x => x.Ativo && x.Nome.ToUpper() == model.Nome.ToUpper() && x.Id !=  model.Id ) )
+        if (_context.Cidades.Any(x => x.Ativo && x.Nome.ToUpper() == model.Nome.ToUpper() && x.Id != model.Id))
             return -1;/// TODO: Set Constant {Technical Debt}
 
         entity.Nome = model.Nome;
@@ -90,7 +89,33 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
 
         return -1; /// TODO: Set Constant {Technical Debt}
 
+
     }
 
+    public bool Excluir(int id)
+    {
+        if (id <= 0)
+        {
+            return false;
+        }
 
+        var entity = _context.Cidades.Find(id);
+
+        if (entity == null)
+            return false;
+
+        try
+        {
+            _context.Cidades.Remove(entity);
+            _context.SaveChanges();
+
+            return true;
+        }
+        catch (Exception ex)
+        {
+            /// Log e Flunt (TODO: Add Packages and use {Technical Debt})
+        }
+
+        return true;/// TODO: Set Constant {Technical Debt}
+    }
 }
