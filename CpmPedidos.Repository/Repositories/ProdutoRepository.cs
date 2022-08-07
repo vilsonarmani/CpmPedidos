@@ -8,17 +8,33 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
 {
     private readonly ApplicationDbContext _context;
 
+    private void OrdenarPorNome(IQueryable<Produto> query, string order)
+    {
+        if (string.IsNullOrEmpty(order) || order.ToUpper() == "ASC")
+        {
+            query = query.OrderBy(x => x.Nome);
+        }
+        else
+        {
+            query = query.OrderByDescending(x => x.Nome);
+        }
+    }
 
     public ProdutoRepository(ApplicationDbContext dbContext) : base(dbContext)
     {
         _context = dbContext;
     }
 
-    public dynamic Get()
+    public dynamic Get(string ordem)
     {
-        return _context.Produtos
+        var queryProduto = _context.Produtos
             .Include(p => p.Categoria)
-            .Where(p => p.Ativo)
+            .Where(p => p.Ativo);
+
+
+        OrdenarPorNome(queryProduto, ordem);
+
+        var queryReturn = queryProduto
             .Select(p => new
             {
                 p.Nome,
@@ -32,17 +48,21 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
                     i.Principal
                 })
 
-            })
-            .OrderBy(x => x.Nome)
-            .ToList();
+            });
+
+        return queryReturn.ToList();
     }
-    public dynamic Search(string text, int pagina)
+    public dynamic Search(string text, int pagina, string ordem)
     {
-        var produtos = _context.Produtos
+        var queryProduto = _context.Produtos
             .Include(p => p.Categoria)
             .Where(p => p.Ativo && (p.Nome.ToUpper().Contains(text.ToUpper()) || p.Descricao.ToUpper().Contains(text.ToUpper())))
             .Skip(TamanhoPagina * (pagina - 1))
-            .Take(TamanhoPagina)
+            .Take(TamanhoPagina);
+
+        OrdenarPorNome(queryProduto, ordem);
+
+        var queryRetorno = queryProduto
             .Select(p => new
             {
                 p.Nome,
@@ -56,9 +76,9 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
                     i.Principal
                 })
 
-            })
-            .OrderBy(x => x.Nome)
-            .ToList();
+            }); 
+
+        var produtos = queryRetorno.ToList();
 
         var ProductsCount = _context.Produtos
             .Where(x => x.Ativo && (x.Nome.ToUpper().Contains(text.ToUpper()) || x.Descricao.ToUpper().Contains(text.ToUpper())))

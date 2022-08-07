@@ -17,19 +17,19 @@ public class ProdutoController : AppBaseController
     }
 
     [HttpGet]
-    public dynamic Get()
+    public dynamic Get([FromQuery] string ordem = "")
     {
         ///get the service provider instance
         var rep = getProdutoRepository();
-        return rep.Get();
+        return rep.Get(ordem);
     }
 
     [HttpGet]
     [Route("search/{text}/{pagina?}")]
-    public dynamic GetSearch(string text, int pagina = 1)
+    public dynamic GetSearch(string text, int pagina = 1, [FromQuery] string order = "ASC")
     {      
         return getProdutoRepository()
-            .Search(text, pagina);
+            .Search(text, pagina, order);
     }
 
     [HttpGet]
