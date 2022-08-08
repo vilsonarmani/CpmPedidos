@@ -8,7 +8,7 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
 {
     private readonly ApplicationDbContext _context;
 
-    private void OrdenarPorNome(IQueryable<Produto> query, string order)
+    private void OrdenarPorNome(ref IQueryable<Produto> query, string order)
     {
         if (string.IsNullOrEmpty(order) || order.ToUpper() == "ASC")
         {
@@ -32,7 +32,7 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
             .Where(p => p.Ativo);
 
 
-        OrdenarPorNome(queryProduto, ordem);
+        OrdenarPorNome(ref queryProduto, ordem);
 
         var queryReturn = queryProduto
             .Select(p => new
@@ -60,7 +60,7 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
             .Skip(TamanhoPagina * (pagina - 1))
             .Take(TamanhoPagina);
 
-        OrdenarPorNome(queryProduto, ordem);
+        OrdenarPorNome(ref queryProduto, ordem);
 
         var queryRetorno = queryProduto
             .Select(p => new
@@ -84,7 +84,7 @@ public class ProdutoRepository : BaseRepository, IProdutoRepository
             .Where(x => x.Ativo && (x.Nome.ToUpper().Contains(text.ToUpper()) || x.Descricao.ToUpper().Contains(text.ToUpper())))
             .Count();
 
-        var PageCount = (ProductsCount / TamanhoPagina);
+        var PageCount = (int)Math.Ceiling( (decimal)(ProductsCount / TamanhoPagina));
 
         if (PageCount < 1)
         {
