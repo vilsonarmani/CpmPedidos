@@ -7,5 +7,5 @@ public interface ICidadeRepository
     dynamic Get();
     int Criar(CidadeDTO model);
     int Alterar(CidadeDTO model);
-    bool Exluir(int id);
+    bool Excluir(int id);
 }

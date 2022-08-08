@@ -92,6 +92,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
 
     }
 
+    
     public bool Excluir(int id)
     {
         if (id <= 0)
@@ -117,5 +118,5 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
         }
 
         return true;/// TODO: Set Constant {Technical Debt}
-    }
+    }    
 }
