@@ -48,7 +48,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
             return entity.Id;
 
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             ///sendMessage Add Flunt
             /// Log e Flunt (TODO: Add Packages and use {Technical Debt})
@@ -82,7 +82,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
 
             return entity.Id;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             /// Log e Flunt (TODO: Add Packages and use {Technical Debt})
         }
@@ -112,7 +112,7 @@ public class CidadeRepository : BaseRepository, ICidadeRepository
 
             return true;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
             /// Log e Flunt (TODO: Add Packages and use {Technical Debt})
         }

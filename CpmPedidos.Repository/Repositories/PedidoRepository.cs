@@ -48,7 +48,7 @@ public class PedidoRepository : BaseRepository, IPedidoRepository
             inicioMes = dateStart;
             finalMes = dateEnd;
         }
-        
+
 
         return _context.Pedidos
             .Where(p => p.CriadoEm.Date >= inicioMes && p.CriadoEm.Date <= finalMes)
@@ -68,55 +68,69 @@ public class PedidoRepository : BaseRepository, IPedidoRepository
         var ret = "";
         try
         {
-            var clienteExiste = _context.Clientes
-                .Where(c => c.Id == pedido.IdCliente)
-                .FirstOrDefault();
-            if (clienteExiste == null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                return "Cliente não localizado ou inexistente";
-            }
-            var entity = new Pedido
-            {
-                Numero = GetProximoNumero(),
-                IdCliente = pedido.IdCliente,
-                CriadoEm = DateTime.Now,
-                Produtos = new List<ProdutoPedido>()
-            };
-
-
-            var valorTotal = 0M;
-
-            foreach (var prodPed in pedido.Produtos)
-            {
-                var precoProduto = _context.Produtos
-                    .Where(p => p.Id == prodPed.IdProduto)
-                    .Select(p => p.Preco)
-                    .FirstOrDefault();
-                if (precoProduto > 0)
+                try
                 {
-                    valorTotal += (prodPed.Quantidade * precoProduto);
-
-                    entity.Produtos.Add(new ProdutoPedido
+                    var clienteExiste = _context.Clientes
+                        .Where(c => c.Id == pedido.IdCliente)
+                        .FirstOrDefault();
+                    if (clienteExiste == null)
                     {
-                        IdProduto = prodPed.IdProduto,
-                        Quantidade = prodPed.Quantidade,
-                        Preco = precoProduto
-                    });
+                        return "Cliente não localizado ou inexistente";
+                    }
+                    var entity = new Pedido
+                    {
+                        Numero = GetProximoNumero(),
+                        IdCliente = pedido.IdCliente,
+                        CriadoEm = DateTime.Now,
+                        Produtos = new List<ProdutoPedido>()
+                    };
+
+                    var valorTotal = 0M;
+
+                    foreach (var prodPed in pedido.Produtos)
+                    {
+                        var precoProduto = _context.Produtos
+                            .Where(p => p.Id == prodPed.IdProduto)
+                            .Select(p => p.Preco)
+                            .FirstOrDefault();
+                        if (precoProduto > 0)
+                        {
+                            valorTotal += (prodPed.Quantidade * precoProduto);
+
+                            entity.Produtos.Add(new ProdutoPedido
+                            {
+                                IdProduto = prodPed.IdProduto,
+                                Quantidade = prodPed.Quantidade,
+                                Preco = precoProduto
+                            });
+                        }
+
+                    }
+
+                    entity.ValorTotal = valorTotal;
+
+                    _context.Pedidos.Add(entity);
+                    _context.SaveChanges();
+
+                    // _context.Database.CommitTransaction();
+                    ///other way
+                    transaction.Commit();
+
+                    ret = entity.Numero;
                 }
-
+                catch (Exception)
+                {
+                    transaction.Rollback();
+                    throw;
+                }
             }
-
-            entity.ValorTotal = valorTotal;
-
-            _context.Pedidos.Add(entity);
-            _context.SaveChanges();
-
-            ret = entity.Numero;
         }
-        catch (Exception ex)
+        catch (Exception)
         {
 
-            throw;
+            /// LOG & Flunt (TODO)
         }
 
         return ret;
