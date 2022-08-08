@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using CpmPedidos.Domain;
+using System.Diagnostics;
 
 namespace CpmPedidos.Repository;
 
@@ -15,7 +16,10 @@ public class ApplicationDbContext : DbContext
     public DbSet<Pedido> Pedidos { get; set; }
 
 
-    //public virtual DbSet<Pedido> Pedidos<get; set;>
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        optionsBuilder.LogTo(message => Debug.WriteLine(message)) ;
+    }
 
 
     protected ApplicationDbContext()

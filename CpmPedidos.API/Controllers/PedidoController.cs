@@ -1,4 +1,5 @@
-﻿using CpmPedidos.Interface;
+﻿using CpmPedidos.Domain;
+using CpmPedidos.Interface;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CpmPedidos.API.Controllers;
@@ -27,5 +28,11 @@ public class PedidoController : AppBaseController
     public dynamic PedidosClientes([FromQuery]DateTime dateStart, DateTime dateEnd)
     {
         return GetService<IPedidoRepository>().PedidosClientes(dateStart, dateEnd);
+    }
+
+    [HttpPost, Route("")]
+    public string SalvarPedido(PedidoDTO pedido)
+    {
+        return GetService<IPedidoRepository>().SalvarPedido(pedido);
     }
 }
